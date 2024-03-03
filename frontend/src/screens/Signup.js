@@ -22,7 +22,9 @@ export default function Signup() {
     const res = await response.json();
     // console.log(res);
 
-    if (!res.success) {
+    if(res.userExist){
+      alert("User Already Exist");
+    }else if (!res.success) {
       alert("Enter Correct Credentials");
     } else {
       // console.log("inside signup");
