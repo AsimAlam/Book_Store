@@ -22,7 +22,7 @@ route.post('/createuser', [
 
             if (userExist) {
                 // console.log("inside createuser findone");
-                res.json({ userExist: true });
+                res.status(400).json({ userExist: true });
             } else {
                 const authPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -35,7 +35,7 @@ route.post('/createuser', [
             }
 
         } catch (err) {
-            res.json({ success: false });
+            res.status(400).json({ success: false });
             console.log(err);
         }
     });
@@ -53,13 +53,18 @@ route.post('/login', [
         try {
 
             const userEmail = await User.findOne({ email: req.body.email });
+
+            if(!userEmail){
+                res.status(400).json({success : false});
+            }
+
             const match = await bcrypt.compare(req.body.password, userEmail.password);
 
             if (match) {
                 // console.log("inside match condition");
-                res.send({ success: true, bookmark: userEmail.bookmark, id: userEmail._id });
+                res.status(200).json({ success: true, bookmark: userEmail.bookmark, id: userEmail._id });
             } else {
-                res.send({ success: false });
+                res.status(400).json({ success: false });
             }
 
         } catch (err) {
